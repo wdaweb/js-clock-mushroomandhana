@@ -10,7 +10,7 @@
         body {
             transition: background-color 0.5s, color 0.5s;
             margin: 0;
-            font-family:Arial, PingFang, sans-serif;
+            font-family: Arial, PingFang, sans-serif;
         }
 
         .content {
@@ -108,7 +108,7 @@
         #second {
             width: 45%;
             height: 4px;
-            background: #f00;
+            background: #FF6E05;
             position: absolute;
             left: 6%;
             top: calc(50%);
@@ -141,8 +141,8 @@
             margin: 0;
             /* position: relative;
             bottom: 140px; */
-        }  
-        
+        }
+
         #week-display {
             font-size: 80px;
             margin: 0;
@@ -157,7 +157,7 @@
 
         .dark-mode #clock {
             /* background: #555; */
-            background-size: cover; 
+            background-size: cover;
             border: 4px solid #eee;
         }
 
@@ -174,24 +174,23 @@
         }
 
         .dark-mode #toggle-button {
-            background: #1c1c1c;
+            background: #071331;
             color: #eee;
-            border: 1px solid #1c1c1c;
+            border: 1px solid #071331;
         }
 
         .dark-mode #test-button {
-            background: #1c1c1c;
+            background: #071331;
             color: #eee;
-            border: 1px solid #1c1c1c;
+            border: 1px solid #071331;
         }
-
-
     </style>
 </head>
 
 <body id="body">
 
-    <audio id="beep-sound" src="./music/542109-zapsplat-cartoon-musical-expression-mallets-happy-carefree-002-47947.wav" preload="auto"></audio>
+    <audio id="beep-sound" src="./music/542109-zapsplat-cartoon-musical-expression-mallets-happy-carefree-002-47947.wav"
+        preload="auto"></audio>
     <!-- 聲音來源
     https://www.soundsnap.com/cartoon_accent_musical_expression_mallets_happy_and_carefree_1 -->
     <div id="content" class="content">
@@ -202,10 +201,10 @@
                     <div id="minute"></div>
                     <div id="second"></div>
                 </div>
-            <div id="btn_area">
-                <button id="toggle-button">切換深色模式</button>
-                <button id="test-button">測試整點聲音</button>
-            </div>
+                <div id="btn_area">
+                    <button id="toggle-button">切換深色模式</button>
+                    <button id="test-button">測試整點聲音</button>
+                </div>
             </div>
             <div class="time_info">
                 <p id="week-display"></p>
@@ -218,7 +217,7 @@
             <button id="test-button">測試整點聲音</button>
         </div> -->
     </div>
-    
+
     <script>
         const updateClock = () => {
             // const date = new Date('2024-05-21T01:00:00'); // 使用固定的測試時間
@@ -246,41 +245,41 @@
 
         const playSound = () => {
             if (playCount < 3) { // 移除 hasUserInteracted 檢查
-            beepSound.play().then(() => {
-            playCount++;
-            setTimeout(playSound, 1000); // 不需要再次檢查 playCount
-            }).catch(error => console.error('播放聲音失敗:', error));
+                beepSound.play().then(() => {
+                    playCount++;
+                    setTimeout(playSound, 1000); // 不需要再次檢查 playCount
+                }).catch(error => console.error('播放聲音失敗:', error));
             }
-            };
+        };
 
-            // 測試按鈕的事件處理器
-            document.getElementById('test-button').addEventListener('click', () => {
+        // 測試按鈕的事件處理器
+        document.getElementById('test-button').addEventListener('click', () => {
             playCount = 0;
             playSound(); // 直接調用 playSound 函數
-            });
+        });
 
-            // 每秒檢查時間並在整點時播放聲音
-            setInterval(() => {
+        // 每秒檢查時間並在整點時播放聲音
+        setInterval(() => {
             const date = new Date();
             const minutes = date.getMinutes();
             const seconds = date.getSeconds();
             if (minutes === 0 && seconds === 0 && playCount === 0) { // 添加 playCount 檢查
-            playSound();
+                playSound();
             }
-            }, 1000);
+        }, 1000);
 
-            function toggleDarkMode() {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-                console.log('切換深色模式:', isDarkMode); // 新增的調試語句
-                // updateClockWithDarkMode('Asia/Taipei'); // 暫時註釋掉這行
-            };
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            console.log('切換深色模式:', isDarkMode); // 新增的調試語句
+            // updateClockWithDarkMode('Asia/Taipei'); // 暫時註釋掉這行
+        };
 
         // 移除 document.body 的 click 事件監聽器，因為我們不希望任何點擊都觸發聲音
         // document.body.removeEventListener('click', playSound);
 
 
-     
+
 
         // 定義圖片陣列
         const sleepImagesDark = ['./images/sleep_dark.gif'];
@@ -290,8 +289,8 @@
         const activeImagesLight = ['./images/active_light.gif'];
         const relaxImagesLight = ['./images/relax_light.gif'];
 
-        let isDarkMode = false;     
-        
+        let isDarkMode = false;
+
         // 在這裡添加其他 JavaScript 函數和事件處理器
 
         function updateClockWithDarkMode(timezone) {
@@ -308,11 +307,11 @@
             let currentImages;
             // 根據小時數選擇圖片陣列
             if (hour >= 23 || hour < 6) {
-            currentImages = isDarkMode ? sleepImagesDark : sleepImagesLight;
+                currentImages = isDarkMode ? sleepImagesDark : sleepImagesLight;
             } else if (hour >= 6 && hour < 17) {
-            currentImages = isDarkMode ? activeImagesDark : activeImagesLight;
+                currentImages = isDarkMode ? activeImagesDark : activeImagesLight;
             } else {
-            currentImages = isDarkMode ? relaxImagesDark : relaxImagesLight;
+                currentImages = isDarkMode ? relaxImagesDark : relaxImagesLight;
             }
 
             const imageIndex = Math.floor(Math.random() * currentImages.length);
@@ -323,40 +322,45 @@
             contentElement.style.backgroundSize = '50%';
             contentElement.style.backgroundPosition = 'right -4em bottom -120px';
         }
-            
-            function toggleDarkMode() {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-                console.log('切換深色模式:', isDarkMode); // 新增的調試語句
-                updateClockWithDarkMode('Asia/Taipei');
-            };
 
-            document.getElementById('toggle-button').addEventListener('click', toggleDarkMode);
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            const toggleButton = document.getElementById('toggle-button');
+            if (isDarkMode) {
+                toggleButton.textContent = '切換淺色模式';
+            } else {
+                toggleButton.textContent = '切換深色模式';
+            }
+            updateClockWithDarkMode('Asia/Taipei');
+        };
 
-            // 確保在頁面加載時調用此函數
-            updateClockWithDarkMode('Asia/Taipei');        
+        document.getElementById('toggle-button').addEventListener('click', toggleDarkMode);
 
-    const getFormattedWeek = () => {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const date = new Date();
-        const dayOfWeek = days[date.getDay()];
+        // 確保在頁面加載時調用此函數
+        updateClockWithDarkMode('Asia/Taipei');
 
-        return `${dayOfWeek}`;
-    };
+        const getFormattedWeek = () => {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const date = new Date();
+            const dayOfWeek = days[date.getDay()];
 
-    document.getElementById('week-display').textContent = getFormattedWeek();
+            return `${dayOfWeek}`;
+        };
 
-    const getFormattedDate = () => {
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const date = new Date();
-        const month = months[date.getMonth()];
-        const dayOfMonth = date.getDate();
-        const year = date.getFullYear();
+        document.getElementById('week-display').textContent = getFormattedWeek();
+
+        const getFormattedDate = () => {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const date = new Date();
+            const month = months[date.getMonth()];
+            const dayOfMonth = date.getDate();
+            const year = date.getFullYear();
 
             return `${month}<span>&nbsp;</span>${dayOfMonth},<span>&nbsp;</span>${year}`;
-            }
+        }
 
         // 將結果設置到網頁元素的 `innerHTML`
         document.getElementById('date-display').innerHTML = getFormattedDate();
 
-    </script>      
+    </script>
