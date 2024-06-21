@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star clock</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.png">
+    <style>
+        body {
+            transition: background-color 0.5s, color 0.5s;
+            margin: 0;
+            font-family:Arial, PingFang, sans-serif;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
+            height: 100vh;
+        }
+
+        /* .time_info {
+            
+        } */
+
+        div#time_area {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 0 auto;
+            gap: 40px;
+        }
+
+
+        div#btn_area {
+            /* position: absolute;
+            margin-left: 20px;
+            bottom: 20px; */
+        }
+
+
+        div#clock_area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #toggle-button {
+            background: #000;
+            color: #eee;
+            border: 2px solid #000;
+            /* margin: 24px 24px 24px; */
+            padding: 8px 16px;
+            margin: 0 12px;
+        }
+
+
+        #test-button {
+            background: #000;
+            color: #eee;
+            border: 2px solid #000;
+            /* margin: 24px 24px 0 0; */
+            padding: 8px 16px;
+            margin: 0 12px;
+        }
+
+        #clock {
+            width: 480px;
+            height: 480px;
+            /* background: #aaa; */
+            border: 4px solid #000;
+            border-radius: 50%;
+            position: relative;
+            transition: background 0.5s;
+            background-size: cover;
+            margin-bottom: 40px;
+        }
+
+
+        .time_info {
+            margin-bottom: 40px;
+        }
+
+        #hour {
+            width: 30%;
+            height: 16px;
+            background: #000;
+            position: absolute;
+            left: 20%;
+            top: calc(50% - 5px);
+            border-radius: 5px;
+            transform-origin: right center;
+        }
+
+        #minute {
+            width: 40%;
+            height: 16px;
+            background: #000;
+            position: absolute;
+            left: 11%;
+            top: calc(50% - 5px);
+            border-radius: 5px;
+            transform-origin: right center;
+        }
+
+        #second {
+            width: 45%;
+            height: 4px;
+            background: #f00;
+            position: absolute;
+            left: 6%;
+            top: calc(50%);
+            border-radius: 5px;
+            transform-origin: right center;
+        }
+
+        .special-hour::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #text {
+            font-size: 80px;
+            margin: 0;
+            /* position: relative;
+            bottom: 120px; */
+        }
+
+        #date-display {
+            font-size: 120px;
+            font-weight: bolder;
+            margin: 0;
+            /* position: relative;
+            bottom: 140px; */
+        }  
+        
+        #week-display {
+            font-size: 80px;
+            margin: 0;
+            /* position: relative;
+            bottom: 152px; */
+        }
+
+        .dark-mode {
+            background-color: #1c2c58;
+            color: #eee;
+        }
+
+        .dark-mode #clock {
+            /* background: #555; */
+            background-size: cover; 
+            border: 4px solid #eee;
+        }
+
+        .dark-mode #hour {
+            background: #eee;
+        }
+
+        .dark-mode #minute {
+            background: #eee;
+        }
+
+        .dark-mode #second {
+            background: #FFE73E;
+        }
+
+        .dark-mode #toggle-button {
+            background: #1c1c1c;
+            color: #eee;
+            border: 1px solid #1c1c1c;
+        }
+
+        .dark-mode #test-button {
+            background: #1c1c1c;
+            color: #eee;
+            border: 1px solid #1c1c1c;
+        }
+
+
+    </style>
+</head>
+
+<body id="body">
+
+    <audio id="beep-sound" src="./music/542109-zapsplat-cartoon-musical-expression-mallets-happy-carefree-002-47947.wav" preload="auto"></audio>
+    <!-- 聲音來源
+    https://www.soundsnap.com/cartoon_accent_musical_expression_mallets_happy_and_carefree_1 -->
+    <div id="content" class="content">
+        <div id="time_area">
+            <div id="clock_area">
+                <div id="clock">
+                    <div id="hour"></div>
+                    <div id="minute"></div>
+                    <div id="second"></div>
+                </div>
+            <div id="btn_area">
+                <button id="toggle-button">切換深色模式</button>
+                <button id="test-button">測試整點聲音</button>
+            </div>
+            </div>
+            <div class="time_info">
+                <p id="week-display"></p>
+                <div id="date-display"></div>
+                <p id="text">00:00:00</p>
+            </div>
+        </div>
+        <!-- <div id="btn_area">
+            <button id="toggle-button">切換深色模式</button>
+            <button id="test-button">測試整點聲音</button>
+        </div> -->
+    </div>
+    
+    <script>
+        const updateClock = () => {
+            // const date = new Date('2024-05-21T01:00:00'); // 使用固定的測試時間
+            const date = new Date();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+            const elHour = document.getElementById('hour');
+            const elMinute = document.getElementById('minute');
+            const elSecond = document.getElementById('second');
+            const elText = document.getElementById('text');
+
+            elHour.style.transform = `rotate(${hours * 30 + 90}deg)`;
+            elMinute.style.transform = `rotate(${minutes * 6 + 90}deg)`;
+            elSecond.style.transform = `rotate(${seconds * 6 + 90}deg)`;
+            elText.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        };
+
+        setInterval(updateClock, 1000);
+        updateClock(); // 初始呼叫以設定時鐘
+
+        const beepSound = document.getElementById('beep-sound');
+        let playCount = 0;
+        let hasUserInteracted = false; // 新增一個變量來追踪用戶是否已經與頁面互動
+
+        const playSound = () => {
+            if (playCount < 3) { // 移除 hasUserInteracted 檢查
+            beepSound.play().then(() => {
+            playCount++;
+            setTimeout(playSound, 1000); // 不需要再次檢查 playCount
+            }).catch(error => console.error('播放聲音失敗:', error));
+            }
+            };
+
+            // 測試按鈕的事件處理器
+            document.getElementById('test-button').addEventListener('click', () => {
+            playCount = 0;
+            playSound(); // 直接調用 playSound 函數
+            });
+
+            // 每秒檢查時間並在整點時播放聲音
+            setInterval(() => {
+            const date = new Date();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+            if (minutes === 0 && seconds === 0 && playCount === 0) { // 添加 playCount 檢查
+            playSound();
+            }
+            }, 1000);
+
+            function toggleDarkMode() {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                console.log('切換深色模式:', isDarkMode); // 新增的調試語句
+                // updateClockWithDarkMode('Asia/Taipei'); // 暫時註釋掉這行
+            };
+
+        // 移除 document.body 的 click 事件監聽器，因為我們不希望任何點擊都觸發聲音
+        // document.body.removeEventListener('click', playSound);
+
+
+     
+
+        // 定義圖片陣列
+        const sleepImagesDark = ['./images/sleep_dark.gif'];
+        const activeImagesDark = ['./images/active_dark.gif'];
+        const relaxImagesDark = ['./images/relax_dark.gif'];
+        const sleepImagesLight = ['./images/sleep_light.gif'];
+        const activeImagesLight = ['./images/active_light.gif'];
+        const relaxImagesLight = ['./images/relax_light.gif'];
+
+        let isDarkMode = false;     
+        
+        // 在這裡添加其他 JavaScript 函數和事件處理器
+
+        function updateClockWithDarkMode(timezone) {
+            const date = new Date(); // 獲取當前時間
+            const hour = date.getHours(); // 使用 getHours 來獲取當前小時數
+
+            // 測試用
+            // const testTime = new Date('2024-05-21T23:00:00Z'); // UTC 測試時間
+            // const date = new Date(testTime); // 保持 date 為 Date 物件
+            // const hour = date.getUTCHours(); // 使用 getUTCHours 來獲取 UTC 小時數
+
+            console.log('當前時間的小時數:', hour);
+
+            let currentImages;
+            // 根據小時數選擇圖片陣列
+            if (hour >= 23 || hour < 6) {
+            currentImages = isDarkMode ? sleepImagesDark : sleepImagesLight;
+            } else if (hour >= 6 && hour < 17) {
+            currentImages = isDarkMode ? activeImagesDark : activeImagesLight;
+            } else {
+            currentImages = isDarkMode ? relaxImagesDark : relaxImagesLight;
+            }
+
+            const imageIndex = Math.floor(Math.random() * currentImages.length);
+            const backgroundImage = currentImages[imageIndex];
+            const contentElement = document.getElementById('content');
+            contentElement.style.backgroundImage = `url(${backgroundImage})`;
+            contentElement.style.backgroundRepeat = 'no-repeat';
+            contentElement.style.backgroundSize = '50%';
+            contentElement.style.backgroundPosition = 'right -4em bottom -120px';
+        }
+            
+            function toggleDarkMode() {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                console.log('切換深色模式:', isDarkMode); // 新增的調試語句
+                updateClockWithDarkMode('Asia/Taipei');
+            };
+
+            document.getElementById('toggle-button').addEventListener('click', toggleDarkMode);
+
+            // 確保在頁面加載時調用此函數
+            updateClockWithDarkMode('Asia/Taipei');        
+
+    const getFormattedWeek = () => {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const date = new Date();
+        const dayOfWeek = days[date.getDay()];
+
+        return `${dayOfWeek}`;
+    };
+
+    document.getElementById('week-display').textContent = getFormattedWeek();
+
+    const getFormattedDate = () => {
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const date = new Date();
+        const month = months[date.getMonth()];
+        const dayOfMonth = date.getDate();
+        const year = date.getFullYear();
+
+            return `${month}<span>&nbsp;</span>${dayOfMonth},<span>&nbsp;</span>${year}`;
+            }
+
+        // 將結果設置到網頁元素的 `innerHTML`
+        document.getElementById('date-display').innerHTML = getFormattedDate();
+
+    </script>      
